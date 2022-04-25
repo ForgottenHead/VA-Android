@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
+import cz.mendelu.tododolist.database.TasksDatabase
+import cz.mendelu.tododolist.model.Task
 
 class TaskListFragment : Fragment() {
 
@@ -28,7 +30,15 @@ class TaskListFragment : Fragment() {
 //            bundle.putInt("id", 10)
 //            findNavController().navigate(R.id.AddTaskFragment, bundle)
 
+            val database = TasksDatabase.getDatabase(requireContext())
+            val id = database.tasksDao().insertTask(Task("Prazdny task"))
+
+
             val directions = TaskListFragmentDirections.actionListToAddTask()
+            directions.id = 10L
+
+
+
             findNavController().navigate(directions)
         }
         return view
