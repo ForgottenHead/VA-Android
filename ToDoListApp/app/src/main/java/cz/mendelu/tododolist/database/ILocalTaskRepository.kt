@@ -1,23 +1,16 @@
 package cz.mendelu.tododolist.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
 import cz.mendelu.tododolist.model.Task
 
-@Dao
-interface TasksDao {
-    @Query("Select * FROM tasks")
+interface ILocalTaskRepository {
     fun getAll(): LiveData<MutableList<Task>>
-
-    @Query("SELECT * FROM tasks WHERE id = :id")
     suspend fun findById(id: Long): Task
-
-    @Insert
     fun insertTask(task: Task): Long
-
-    @Update
     fun updateTask(task: Task)
-
-    @Delete
     fun deleteTask(task: Task)
 }

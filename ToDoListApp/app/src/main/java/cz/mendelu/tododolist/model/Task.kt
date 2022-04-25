@@ -11,7 +11,4 @@ data class Task(@ColumnInfo(name = "text") var text: String) {
     @ColumnInfo(name = "id")
     var id: Long? = null
 
-
-
-
 }

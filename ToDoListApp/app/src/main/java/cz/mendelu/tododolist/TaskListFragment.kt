@@ -6,52 +6,105 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import cz.mendelu.tododolist.architecture.BaseFragment
 import cz.mendelu.tododolist.database.TasksDatabase
+import cz.mendelu.tododolist.databinding.FragmentTaskListBinding
+import cz.mendelu.tododolist.databinding.RowTaskListBinding
 import cz.mendelu.tododolist.model.Task
 
-class TaskListFragment : Fragment() {
+class TaskListFragment : BaseFragment<FragmentTaskListBinding, TaskListViewModel>(TaskListViewModel::class) {
 
-    companion object {
-        fun newInstance() = TaskListFragment()
-    }
-
-    private lateinit var viewModel: TaskListViewModel
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view =  inflater.inflate(R.layout.fragment_task_list, container, false)
-        val button: MaterialButton = view.findViewById(R.id.tlacitko)
-        button.setOnClickListener{
-
-//         ---BAD PRACTICE!---
-//            val bundle = Bundle()
-//            bundle.putInt("id", 10)
-//            findNavController().navigate(R.id.AddTaskFragment, bundle)
-
-            val database = TasksDatabase.getDatabase(requireContext())
-            val id = database.tasksDao().insertTask(Task("Prazdny task"))
+    private val tasksList: MutableList<Task> = mutableListOf()
+    private lateinit var adapter: TasksAdapter
+    private lateinit var layoutManager : LinearLayoutManager
 
 
-            val directions = TaskListFragmentDirections.actionListToAddTask()
-            directions.id = 10L
-
-
-
-            findNavController().navigate(directions)
+    inner class TaskDiffUtils(private val oldList: MutableList<Task>,
+                              private val newlist: MutableList<Task>) : DiffUtil.Callback(){
+        override fun getOldListSize(): Int {
+            return oldList.size
         }
-        return view
 
+        override fun getNewListSize(): Int {
+            return newlist.size
+        }
 
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].id == newlist[newItemPosition].id
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].text == newlist[newItemPosition].text
+        }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(TaskListViewModel::class.java)
-        // TODO: Use the ViewModel
+    inner class TasksAdapter: RecyclerView.Adapter<TasksAdapter.TaskViewHolder>(){
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+            return TaskViewHolder(
+                RowTaskListBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false))
+        }
+
+        override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+            val task = tasksList.get(position)
+            holder.binding.taskName.text = task.text
+
+            if(position % 2 == 0){
+                holder.binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.black))
+                holder.binding.taskName.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+
+            }else{
+                holder.binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white))
+            }
+
+        }
+        //override fun getItemCount(): Int = tasksList.size
+        override fun getItemCount(): Int {
+                return  tasksList.size
+        }
+
+        inner class TaskViewHolder(val binding:RowTaskListBinding):
+            RecyclerView.ViewHolder(binding.root){
+        }
     }
 
+    override val bindingInflater: (LayoutInflater) -> FragmentTaskListBinding
+        get() = FragmentTaskListBinding::inflate
+
+    override fun initViews() {
+        layoutManager = LinearLayoutManager(requireContext())
+        adapter = TasksAdapter()
+        binding.taskList.layoutManager = layoutManager
+        binding.taskList.adapter = adapter
+
+
+        binding.fab.setOnClickListener{
+            findNavController().navigate(TaskListFragmentDirections.actionListToAddTask())
+        }
+        viewModel.getAll().observe(viewLifecycleOwner, object : Observer<MutableList<Task>>{
+            override fun onChanged(t: MutableList<Task>?) {
+                val diffCallback = TaskDiffUtils(tasksList, t!!)
+                val diffResult = DiffUtil.calculateDiff(diffCallback)
+                diffResult.dispatchUpdatesTo(adapter)
+                tasksList.clear()
+                tasksList.addAll(t)
+            }
+
+        })
+    }
+
+    override fun onActivityCreated() {
+
+    }
 
 
 }
