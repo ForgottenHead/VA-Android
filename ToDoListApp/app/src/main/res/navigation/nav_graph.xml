@@ -11,6 +11,29 @@
         android:label="Tasks"
         tools:layout="@layout/fragment_task_list">
 
+        <action
+            android:id="@+id/action_list_to_add_task"
+            app:destination="@id/AddTaskFragment">
+        </action>
+
     </fragment>
+
+    <fragment
+        android:id="@+id/AddTaskFragment"
+        android:name="cz.mendelu.tododolist.AddTaskFragment"
+        android:label="Add task"
+        tools:layout="@layout/fragment_add_task">
+
+        <argument
+            android:name="id"
+            app:argType="long"
+            android:defaultValue="-1L">
+
+
+
+        </argument>
+    </fragment>
+
+
 
 </navigation>
