@@ -17,6 +17,12 @@
             android:layout_height="wrap_content"
             app:hint="Task name"/>
 
+        <cz.mendelu.tododolist.TextInputView
+            android:id="@+id/taskDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hint="Task description"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveButton"
             android:layout_width="match_parent"

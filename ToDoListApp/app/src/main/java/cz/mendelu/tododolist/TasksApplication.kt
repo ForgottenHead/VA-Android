@@ -17,6 +17,7 @@ class TasksApplication: Application() {
         startKoin{
             androidContext(applicationContext)
 
+            // vypisat vsetky moduly
             modules(databaseModule, daoModule, repositoryModule, viewModelModule)
 
 

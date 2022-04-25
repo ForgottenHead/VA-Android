@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import cz.mendelu.tododolist.model.Task
 
-@Database(entities = [Task::class], version = 1, exportSchema = true)
+@Database(entities = [Task::class], version = 3, exportSchema = true)
 abstract class TasksDatabase : RoomDatabase(){
 
     abstract fun tasksDao():TasksDao
@@ -20,11 +22,19 @@ abstract class TasksDatabase : RoomDatabase(){
                         INSTANCE = Room.databaseBuilder(
                             context.applicationContext,
                             TasksDatabase::class.java, "tasks_database"
-                        ).allowMainThreadQueries().build()
+                        ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
                     }
                 }
             }
             return INSTANCE!!
         }
+
+
+        private val MIGRATION_1_2: Migration = object: Migration(1,2){
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE tasks ADD COLUMN 'description' TEXT")
+            }
+        }
+
     }
 }

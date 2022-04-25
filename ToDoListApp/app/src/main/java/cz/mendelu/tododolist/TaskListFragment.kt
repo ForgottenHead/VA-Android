@@ -57,14 +57,15 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding, TaskListViewModel
         override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
             val task = tasksList.get(position)
             holder.binding.taskName.text = task.text
+            holder.binding.taskDescription.text = task.description
 
-            if(position % 2 == 0){
-                holder.binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.black))
-                holder.binding.taskName.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-
-            }else{
-                holder.binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white))
-            }
+//            if(position % 2 == 0){
+//                holder.binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.black))
+//                holder.binding.taskName.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+//
+//            }else{
+//                holder.binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white))
+//            }
 
         }
         //override fun getItemCount(): Int = tasksList.size
