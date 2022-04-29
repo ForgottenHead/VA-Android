@@ -23,6 +23,15 @@
             android:layout_height="wrap_content"
             app:hint="Task description"/>
 
+        <cz.mendelu.tododolist.views.InfoView
+            android:id="@+id/taskDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:header="Date"
+            app:value="Not set"
+            app:image="@drawable/ic_calendar_today"
+            />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveButton"
             android:layout_width="match_parent"

@@ -57,15 +57,17 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding, TaskListViewModel
         override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
             val task = tasksList.get(position)
             holder.binding.taskName.text = task.text
-            holder.binding.taskDescription.text = task.description
+            //holder.binding.taskDescription.text = task.description
 
-//            if(position % 2 == 0){
-//                holder.binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.black))
-//                holder.binding.taskName.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-//
-//            }else{
-//                holder.binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.white))
-//            }
+            holder.binding.root.setOnClickListener{
+                val actions = TaskListFragmentDirections.actionListToAddTask()
+                // pouzivat holder.adapterPosition ten vzdy vrati spravny riadok, naopak od get(position) tu nemusi fungovat
+                actions.id = tasksList.get(holder.adapterPosition).id!!
+
+                findNavController().navigate(actions)
+
+            }
+
 
         }
         //override fun getItemCount(): Int = tasksList.size

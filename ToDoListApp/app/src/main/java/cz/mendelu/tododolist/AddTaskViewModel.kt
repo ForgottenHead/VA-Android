@@ -1,7 +1,10 @@
 package cz.mendelu.tododolist
 
 import androidx.lifecycle.ViewModel
+import cz.mendelu.tododolist.model.Task
 
 class AddTaskViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+
+    var id: Long? = null
+    var task: Task = Task("")
 }
