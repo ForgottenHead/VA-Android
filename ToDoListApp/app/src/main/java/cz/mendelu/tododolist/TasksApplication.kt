@@ -10,17 +10,13 @@ import org.koin.core.context.startKoin
 
 class TasksApplication: Application() {
     //aplikacnu triedu treba pouzit -> Napisat do manifestu
-
     override fun onCreate() {
         super.onCreate()
 
         startKoin{
             androidContext(applicationContext)
-
             // vypisat vsetky moduly
             modules(databaseModule, daoModule, repositoryModule, viewModelModule)
-
-
         }
     }
 }

@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import cz.mendelu.tododolist.architecture.BaseFragment
+import cz.mendelu.tododolist.constants.BundleConstants
 import cz.mendelu.tododolist.databinding.FragmentMapsBinding
 import cz.mendelu.tododolist.viewmodels.MapsFragmentViewModel
 
@@ -74,7 +75,6 @@ class MapsFragment : BaseFragment<FragmentMapsBinding, MapsFragmentViewModel>(Ma
     }
 
     override fun onActivityCreated() {
-
     }
 
 
@@ -85,15 +85,19 @@ class MapsFragment : BaseFragment<FragmentMapsBinding, MapsFragmentViewModel>(Ma
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.action_save ->{
-                findNavController().previousBackStackEntry?.savedStateHandle?.set("latitude", viewModel.latitude)
-                findNavController().previousBackStackEntry?.savedStateHandle?.set("longitude", viewModel.longitude)
+                findNavController().previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(BundleConstants.LATITUDE, viewModel.latitude)
+
+
+                findNavController().previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set(BundleConstants.LONGITUDE, viewModel.longitude)
                 finishCurrentFragment()
                 return true
             }
 
             else -> super.onOptionsItemSelected(item)
         }
-
-
     }
 }

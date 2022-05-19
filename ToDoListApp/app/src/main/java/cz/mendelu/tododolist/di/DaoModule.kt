@@ -7,7 +7,6 @@ import org.koin.dsl.module
 
 val daoModule = module {
     single { provideDao(get()) }
-
 }
 
 fun provideDao(database: TasksDatabase): TasksDao = database.tasksDao()

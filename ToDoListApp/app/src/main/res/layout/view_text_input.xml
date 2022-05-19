@@ -17,7 +17,6 @@
         android:maxLength="500"
         android:maxLines="1"
         android:inputType="text"/>
-
     </com.google.android.material.textfield.TextInputLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

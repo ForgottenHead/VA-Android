@@ -75,16 +75,14 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding, TaskListViewModel
 
             })
 
-
             holder.binding.root.setOnClickListener{
                 val actions = TaskListFragmentDirections.actionListToAddTask()
-                // pouzivat holder.adapterPosition ten vzdy vrati spravny riadok, naopak od get(position) tu nemusi fungovat
+                // pouzivat holder.adapterPosition ten vzdy vrati spravny riadok,
+                // naopak od get(position) tu nemusi fungovat
                 actions.id = tasksList.get(holder.adapterPosition).id!!
 
                 findNavController().navigate(actions)
-
             }
-
 
         }
         //override fun getItemCount(): Int = tasksList.size
@@ -123,7 +121,6 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding, TaskListViewModel
     }
 
     override fun onActivityCreated() {
-
     }
 
 

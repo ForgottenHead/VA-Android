@@ -5,7 +5,6 @@ import cz.mendelu.tododolist.model.Task
 
 class LocalTaskRepositoryImplementation(private val dao:TasksDao): ILocalTaskRepository {
 
-
     override fun getAll(): LiveData<MutableList<Task>> {
         return dao.getAll()
     }

@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import cz.mendelu.tododolist.architecture.BaseFragment
+import cz.mendelu.tododolist.constants.BundleConstants
 import cz.mendelu.tododolist.databinding.FragmentAddTaskBinding
 import cz.mendelu.tododolist.extensions.roundTwoDecimal
 import cz.mendelu.tododolist.utils.DateUtils
@@ -43,22 +44,22 @@ class AddTaskFragment : BaseFragment<FragmentAddTaskBinding, AddTaskViewModel>(A
         findNavController()
             .currentBackStackEntry
             ?.savedStateHandle
-            ?.getLiveData<Double>("latitude")
+            ?.getLiveData<Double>(BundleConstants.LATITUDE)
             ?.observe(viewLifecycleOwner, {
                 viewModel.task.latitude = it
 
-                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Double>("latitude")
+                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Double>(BundleConstants.LATITUDE)
                 setLocation()
             })
 
         findNavController()
             .currentBackStackEntry
             ?.savedStateHandle
-            ?.getLiveData<Double>("longitude")
+            ?.getLiveData<Double>(BundleConstants.LONGITUDE)
             ?.observe(viewLifecycleOwner, {
                 viewModel.task.longitude = it
 
-                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Double>("longitude")
+                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Double>(BundleConstants.LONGITUDE)
                 setLocation()
             })
 

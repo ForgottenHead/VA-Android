@@ -10,6 +10,7 @@ data class Task(@ColumnInfo(name = "text") var text: String) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     var id: Long? = null
+
     @ColumnInfo(name = "description")
     var description: String? = null
 

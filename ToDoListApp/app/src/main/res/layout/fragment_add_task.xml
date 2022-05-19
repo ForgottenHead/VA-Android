@@ -36,7 +36,7 @@
             android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="15dp"
+            android:paddingTop="16dp"
             app:header="Location"
             app:value="Not set"
             app:image="@drawable/ic_place"/>
