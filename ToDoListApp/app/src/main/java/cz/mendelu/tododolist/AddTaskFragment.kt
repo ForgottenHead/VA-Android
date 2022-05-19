@@ -2,21 +2,19 @@ package cz.mendelu.tododolist
 
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
-import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.DatePicker
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import cz.mendelu.tododolist.architecture.BaseFragment
-import cz.mendelu.tododolist.database.TasksDatabase
 import cz.mendelu.tododolist.databinding.FragmentAddTaskBinding
-import cz.mendelu.tododolist.model.Task
+import cz.mendelu.tododolist.extensions.roundTwoDecimal
 import cz.mendelu.tododolist.utils.DateUtils
+import cz.mendelu.tododolist.viewmodels.AddTaskViewModel
 import kotlinx.coroutines.launch
 
 class AddTaskFragment : BaseFragment<FragmentAddTaskBinding, AddTaskViewModel>(AddTaskViewModel::class) {
@@ -42,6 +40,28 @@ class AddTaskFragment : BaseFragment<FragmentAddTaskBinding, AddTaskViewModel>(A
 
         setInteractionListeners()
 
+        findNavController()
+            .currentBackStackEntry
+            ?.savedStateHandle
+            ?.getLiveData<Double>("latitude")
+            ?.observe(viewLifecycleOwner, {
+                viewModel.task.latitude = it
+
+                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Double>("latitude")
+                setLocation()
+            })
+
+        findNavController()
+            .currentBackStackEntry
+            ?.savedStateHandle
+            ?.getLiveData<Double>("longitude")
+            ?.observe(viewLifecycleOwner, {
+                viewModel.task.longitude = it
+
+                findNavController().currentBackStackEntry?.savedStateHandle?.remove<Double>("longitude")
+                setLocation()
+            })
+
     }
 
     override fun onActivityCreated() {
@@ -57,6 +77,7 @@ class AddTaskFragment : BaseFragment<FragmentAddTaskBinding, AddTaskViewModel>(A
         }
 
         setDate()
+        setLocation()
 
     }
 
@@ -68,6 +89,18 @@ class AddTaskFragment : BaseFragment<FragmentAddTaskBinding, AddTaskViewModel>(A
             binding.taskDate.text = "Not set"
             binding.taskDate.hideClearButton()
         }
+    }
+
+    private fun setLocation(){
+        if(viewModel.task.latitude != null && viewModel.task.longitude  !=null){
+            binding.location.text = "${viewModel.task.latitude!!.roundTwoDecimal()}; ${viewModel.task.longitude!!.roundTwoDecimal()}"
+            binding.location.showClearButton()
+        }else{
+            binding.location.text = "Not set"
+            binding.location.hideClearButton()
+        }
+
+
     }
 
     private fun setInteractionListeners(){
@@ -119,6 +152,25 @@ class AddTaskFragment : BaseFragment<FragmentAddTaskBinding, AddTaskViewModel>(A
 
 
         })
+
+        binding.location.setOnClickListener{
+            val directions = AddTaskFragmentDirections.actionAddtaskToMap()
+            if(viewModel.task.latitude != null && viewModel.task.longitude != null){
+                directions.latitude = viewModel.task.latitude!!.toFloat()
+                directions.longitude = viewModel.task.longitude!!.toFloat()
+            }
+
+            findNavController().navigate(directions)
+        }
+
+        binding.location.setOnClearClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                viewModel.task.latitude = null
+                viewModel.task.longitude = null
+                setLocation()
+            }
+        })
+
     }
 
 

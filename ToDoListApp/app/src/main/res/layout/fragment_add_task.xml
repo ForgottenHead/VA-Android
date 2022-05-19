@@ -32,10 +32,20 @@
             app:image="@drawable/ic_calendar_today"
             />
 
+        <cz.mendelu.tododolist.views.InfoView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            app:header="Location"
+            app:value="Not set"
+            app:image="@drawable/ic_place"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="20dp"
             android:text="Save"/>
 
     </LinearLayout>
