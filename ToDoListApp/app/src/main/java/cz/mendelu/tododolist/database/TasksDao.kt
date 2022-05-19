@@ -13,11 +13,14 @@ interface TasksDao {
     suspend fun findById(id: Long): Task
 
     @Insert
-    fun insertTask(task: Task): Long
+    suspend fun insertTask(task: Task): Long
 
     @Update
-    fun updateTask(task: Task)
+    suspend fun updateTask(task: Task)
 
     @Delete
-    fun deleteTask(task: Task)
+    suspend fun deleteTask(task: Task)
+
+    @Query("UPDATE tasks SET done = :state WHERE id = :id")
+    suspend fun setCheckBoxState(id: Long, state: Boolean)
 }

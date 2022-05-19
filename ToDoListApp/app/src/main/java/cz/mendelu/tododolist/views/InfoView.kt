@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import cz.mendelu.tododolist.R
 import cz.mendelu.tododolist.databinding.ViewInfoBinding
@@ -31,6 +32,8 @@ class InfoView @JvmOverloads constructor(
         if (attrs != null){
             loadAttributes(attrs)
         }
+
+        binding.clearButton.visibility = View.GONE
     }
 
     private fun loadAttributes(attrs: AttributeSet){
@@ -52,5 +55,18 @@ class InfoView @JvmOverloads constructor(
 
     fun addTextChangeListener(watcher: TextWatcher){
         binding.value.addTextChangedListener(watcher)
+    }
+
+
+    fun showClearButton(){
+        binding.clearButton.visibility = View.VISIBLE
+    }
+
+    fun hideClearButton(){
+        binding.clearButton.visibility = View.GONE
+    }
+
+    fun setOnClearClickListener(listener: OnClickListener){
+        binding.clearButton.setOnClickListener(listener)
     }
 }

@@ -5,55 +5,22 @@ import android.icu.util.Calendar
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.button.MaterialButton
 import cz.mendelu.tododolist.architecture.BaseFragment
 import cz.mendelu.tododolist.database.TasksDatabase
 import cz.mendelu.tododolist.databinding.FragmentAddTaskBinding
 import cz.mendelu.tododolist.model.Task
 import cz.mendelu.tododolist.utils.DateUtils
+import kotlinx.coroutines.launch
 
 class AddTaskFragment : BaseFragment<FragmentAddTaskBinding, AddTaskViewModel>(AddTaskViewModel::class) {
     private val arguments: AddTaskFragmentArgs by navArgs()
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view =  inflater.inflate(R.layout.fragment_add_task, container, false)
-
-
-
-
-        val textInputView: TextInputView = view.findViewById(R.id.taskName)
-        val saveButton: MaterialButton = view.findViewById(R.id.saveButton)
-
-        saveButton.setOnClickListener{
-            if(textInputView.text.isNotEmpty()){
-                textInputView.setError(null)
-                //ulozenie do DB
-                TasksDatabase.getDatabase(requireContext()).tasksDao().insertTask(Task(textInputView.text))
-
-                //navrat spat na list
-                findNavController().popBackStack()
-            }else{
-                textInputView.setError("Cannot be empty")
-            }
-
-
-                //todo opravit
-            setInteractionListeners()
-        }
-
-        return view
-    }
 
 
     override val bindingInflater: (LayoutInflater) -> FragmentAddTaskBinding
@@ -63,12 +30,18 @@ class AddTaskFragment : BaseFragment<FragmentAddTaskBinding, AddTaskViewModel>(A
         viewModel.id = if (arguments.id != -1L) arguments.id else null
 
         if (viewModel.id == null){
-            //pridam task
+            fillLayout()
         }else{
-            //uprav task
+
+            lifecycleScope.launch{
+                viewModel.task = viewModel.findTaskById()
+            }.invokeOnCompletion {
+                fillLayout()
+            }
         }
 
         setInteractionListeners()
+
     }
 
     override fun onActivityCreated() {
@@ -79,7 +52,7 @@ class AddTaskFragment : BaseFragment<FragmentAddTaskBinding, AddTaskViewModel>(A
         if(viewModel.task.text.isNotEmpty()){
             binding.taskName.text = viewModel.task.text
         }
-        if(viewModel.task.description.isNullOrEmpty()){
+        if(!viewModel.task.description.isNullOrEmpty()){
             binding.taskDescription.text = viewModel.task.description!!
         }
 
@@ -90,28 +63,61 @@ class AddTaskFragment : BaseFragment<FragmentAddTaskBinding, AddTaskViewModel>(A
     private fun setDate(){
         viewModel.task.date?.let {
             binding.taskDate.text = DateUtils.getDateString(it) //it je z let
+            binding.taskDate.showClearButton()
         }?: kotlin.run {
             binding.taskDate.text = "Not set"
+            binding.taskDate.hideClearButton()
         }
     }
 
     private fun setInteractionListeners(){
+        binding.saveButton.setOnClickListener{
+            if(binding.taskName.text.isNotEmpty()){
+                binding.taskName.setError(null)
+                //ulozenie do DB cez viewModel (treba cez ine vlakno nez hlavne)
+                lifecycleScope.launch {
+                    viewModel.saveTask()
+                }.invokeOnCompletion {
+                    //z basefragmentu - skryje klavesnicu a popbackne
+                    finishCurrentFragment()
+                }
+
+            }else{
+                binding.taskName.setError("Cannot be empty")
+            }
+        }
+
         binding.taskDate.setOnClickListener{
             openDatePickerDialog()
         }
 
         binding.taskName.addTextChangeListener(object : TextWatcher{
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(p0: Editable?) {
                 viewModel.task.text = p0.toString()
             }
+        })
+
+        binding.taskDescription.addTextChangeListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(p0: Editable?) {
+                viewModel.task.description = p0.toString()
+            }
+        })
+
+        binding.taskDate.setOnClearClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                viewModel.task.date = null
+                setDate()
+            }
+
+
         })
     }
 
@@ -140,8 +146,6 @@ class AddTaskFragment : BaseFragment<FragmentAddTaskBinding, AddTaskViewModel>(A
                     }
                 }
             , y,m,d)
-
-
 
         dialog.show()
     }

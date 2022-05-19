@@ -10,7 +10,8 @@ import cz.mendelu.tododolist.model.Task
 interface ILocalTaskRepository {
     fun getAll(): LiveData<MutableList<Task>>
     suspend fun findById(id: Long): Task
-    fun insertTask(task: Task): Long
-    fun updateTask(task: Task)
-    fun deleteTask(task: Task)
+    suspend fun insertTask(task: Task): Long
+    suspend fun updateTask(task: Task)
+    suspend fun deleteTask(task: Task)
+    suspend fun setCheckBoxState(id: Long, state: Boolean)
 }

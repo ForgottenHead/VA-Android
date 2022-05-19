@@ -14,15 +14,19 @@ class LocalTaskRepositoryImplementation(private val dao:TasksDao): ILocalTaskRep
         return dao.findById(id)
     }
 
-    override fun insertTask(task: Task): Long {
+    override suspend fun insertTask(task: Task): Long {
         return dao.insertTask(task)
     }
 
-    override fun updateTask(task: Task) {
+    override suspend fun updateTask(task: Task) {
         dao.updateTask(task)
     }
 
-    override fun deleteTask(task: Task) {
+    override suspend fun deleteTask(task: Task) {
         dao.deleteTask(task)
+    }
+
+    override suspend fun setCheckBoxState(id: Long, state: Boolean) {
+        dao.setCheckBoxState(id, state)
     }
 }

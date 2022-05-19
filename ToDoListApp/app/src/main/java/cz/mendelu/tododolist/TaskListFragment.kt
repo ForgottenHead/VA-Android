@@ -6,8 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
+import android.widget.RadioGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +22,7 @@ import cz.mendelu.tododolist.database.TasksDatabase
 import cz.mendelu.tododolist.databinding.FragmentTaskListBinding
 import cz.mendelu.tododolist.databinding.RowTaskListBinding
 import cz.mendelu.tododolist.model.Task
+import kotlinx.coroutines.launch
 
 class TaskListFragment : BaseFragment<FragmentTaskListBinding, TaskListViewModel>(TaskListViewModel::class) {
 
@@ -42,7 +46,8 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding, TaskListViewModel
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition].text == newlist[newItemPosition].text
+            return (oldList[oldItemPosition].text == newlist[newItemPosition].text) &&
+                    (oldList[oldItemPosition].description == newlist[newItemPosition].description)
         }
     }
 
@@ -57,7 +62,26 @@ class TaskListFragment : BaseFragment<FragmentTaskListBinding, TaskListViewModel
         override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
             val task = tasksList.get(position)
             holder.binding.taskName.text = task.text
-            //holder.binding.taskDescription.text = task.description
+
+            if(!task.description.isNullOrEmpty()){
+                holder.binding.taskDescription.text = task.description
+                holder.binding.taskDescription.visibility = View.VISIBLE
+            }else{
+                holder.binding.taskDescription.visibility = View.GONE
+            }
+
+            holder.binding.checkbox.isChecked = task.done
+
+            holder.binding.checkbox.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener{
+                override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+                    lifecycleScope.launch{
+                        viewModel.setCheckBoxState(tasksList.get(holder.adapterPosition).id!!, p1)
+                    }
+
+                }
+
+            })
+
 
             holder.binding.root.setOnClickListener{
                 val actions = TaskListFragmentDirections.actionListToAddTask()

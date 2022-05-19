@@ -12,4 +12,6 @@ class TaskListViewModel(private val tasksRepository: ILocalTaskRepository) : Vie
     fun getAll(): LiveData<MutableList<Task>> {
         return tasksRepository.getAll()
     }
+
+    suspend fun setCheckBoxState(id: Long, state: Boolean) = tasksRepository.setCheckBoxState(id, state)
 }
