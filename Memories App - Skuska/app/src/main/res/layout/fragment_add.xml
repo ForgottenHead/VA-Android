@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddMemoryFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.example.skuska.TextInputView
+            android:id="@+id/memoryName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hint="Memory name"/>
+
+        <com.example.skuska.TextInputView
+            android:id="@+id/memoryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hint="Memory text"/>
+
+        <com.example.skuska.TextInputView
+            android:id="@+id/memoryPlace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hint="Memory place"/>
+
+        <Spinner
+            android:id="@+id/memorySpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dialog"
+            android:textAlignment="textStart">
+
+        </Spinner>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:text="Save"/>
+
+
+
+
+
+    </LinearLayout>
+
+
+
+
+</androidx.core.widget.NestedScrollView>

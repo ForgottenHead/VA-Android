@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/FragmentList">
+
+    <fragment
+        android:id="@+id/FragmentList"
+        android:name="com.example.skuska.MemoryListFragment"
+        android:label="Memories List"
+        tools:layout="@layout/fragment_list">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            app:destination="@id/FragmentAdd" />
+
+        <action
+            android:id="@+id/action_first_to_Third"
+            app:destination="@id/FragmentEdit"/>
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/FragmentAdd"
+        android:name="com.example.skuska.AddMemoryFragment"
+        android:label="Memory Add"
+        tools:layout="@layout/fragment_add">
+    </fragment>
+
+    <fragment
+        android:id="@+id/FragmentEdit"
+        android:name="com.example.skuska.EditMemoryFragment"
+        android:label="Memory Detail"
+        tools:layout="@layout/fragment_edit_memory">
+
+        <argument
+            android:name="id"
+            app:argType="long"
+            android:defaultValue="-1L">
+        </argument>
+
+    </fragment>
+</navigation>
